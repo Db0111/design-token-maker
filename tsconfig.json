@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["es6"],
+    "target": "es2020",
+    "lib": ["es2020", "dom"],
     "strict": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/@figma"
-    ]
-  }
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types", "./node_modules/@figma"]
+  },
+  "include": ["code.ts", "ui.ts", "figma-extend.d.ts"]
 }
