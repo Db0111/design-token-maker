@@ -1,17 +1,153 @@
-<h2>Rectangle Creator</h2>
-<p>Count: <input id="count" type="number" value="5"></p>
-<button id="create">Create</button>
-<button id="cancel">Cancel</button>
+<h2>🎨 Design Token Creator</h2>
+<div class="wrapper">
+  <label for="token-name">Token Name</label>
+  <input id="token-name" type="text" placeholder="e.g. Primary" />
+
+  <label for="color">Base Color</label>
+  <div class="color-picker">
+    <input id="color" type="color" value="#0ea5e9" />
+    <div id="preview"></div>
+  </div>
+
+  <div class="buttons">
+    <button id="create">Create</button>
+    <button id="cancel">Cancel</button>
+  </div>
+</div>
+
+<footer>Figma Plugin — v1.0</footer>
+
+<style>
+  body {
+    font-family: Inter, sans-serif;
+    background-color: #f9fafb;
+    color: #111827;
+    margin: 0;
+    padding: 16px;
+    width: 280px;
+  }
+
+  h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-align: center;
+    color: #111827;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  input[type="text"] {
+    height: 36px;
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .color-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  input[type="color"] {
+    width: 60%;
+    height: 36px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+  }
+
+  #preview {
+    flex: 1;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background-color: #0ea5e9;
+    transition: background 0.2s ease;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  button {
+    flex: 1;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+
+  #create {
+    background-color: #3b82f6;
+    color: white;
+  }
+
+  #create:hover {
+    background-color: #2563eb;
+  }
+
+  #cancel {
+    background-color: #e5e7eb;
+    color: #374151;
+  }
+
+  #cancel:hover {
+    background-color: #d1d5db;
+  }
+
+  button:active {
+    transform: scale(0.97);
+  }
+
+  footer {
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: center;
+    margin-top: 12px;
+  }
+</style>
+
 <script>
+  const colorInput = document.getElementById("color");
+  const previewBox = document.getElementById("preview");
+  const nameInput = document.getElementById("token-name");
+  const createBtn = document.getElementById("create");
+  const cancelBtn = document.getElementById("cancel");
 
-document.getElementById('create').onclick = () => {
-  const textbox = document.getElementById('count');
-  const count = parseInt(textbox.value, 10);
-  parent.postMessage({ pluginMessage: { type: 'create-shapes', count } }, '*')
-}
+  // 색상 미리보기 업데이트
+  colorInput.oninput = () => {
+    previewBox.style.backgroundColor = colorInput.value;
+  };
 
-document.getElementById('cancel').onclick = () => {
-  parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
-}
+  createBtn.onclick = () => {
+    const color = colorInput.value;
+    const name = nameInput.value.trim() || "Primary";
+    parent.postMessage(
+      { pluginMessage: { type: "create-token", color, name } },
+      "*"
+    );
+  };
 
+  cancelBtn.onclick = () => {
+    parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
+  };
 </script>
