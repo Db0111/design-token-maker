@@ -1,21 +1,33 @@
-<h2>🎨 Design Token Creator</h2>
+<h2>🎨 Button-Token-Maker</h2>
 <div class="wrapper">
-  <label for="token-name">Token Name</label>
-  <input id="token-name" type="text" placeholder="e.g. Primary" />
+  <label for="token-name">Token Set Name</label>
+  <input id="token-name" type="text" placeholder="e.g. Brand Buttons" />
 
-  <label for="color">Base Color</label>
+  <label for="primary-color">Primary Color</label>
   <div class="color-picker">
-    <input id="color" type="color" value="#0ea5e9" />
-    <div id="preview"></div>
+    <input id="primary-color" type="color" value="#7C3AED" />
+    <div id="preview-primary" class="preview"></div>
+  </div>
+
+  <label for="secondary-color">Secondary Color (optional)</label>
+  <div class="color-picker">
+    <input id="secondary-color" type="color" value="#A3A3A3" />
+    <div id="preview-secondary" class="preview"></div>
+  </div>
+
+  <label for="danger-color">Danger Color</label>
+  <div class="color-picker">
+    <input id="danger-color" type="color" value="#DC2626" />
+    <div id="preview-danger" class="preview"></div>
   </div>
 
   <div class="buttons">
-    <button id="create">Create</button>
+    <button id="create">Create Variants</button>
     <button id="cancel">Cancel</button>
   </div>
 </div>
 
-<footer>Figma Plugin — v1.0</footer>
+<footer>Figma Plugin — v2.0</footer>
 
 <style>
   body {
@@ -24,7 +36,8 @@
     color: #111827;
     margin: 0;
     padding: 16px;
-    width: 280px;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   h2 {
@@ -70,12 +83,11 @@
     cursor: pointer;
   }
 
-  #preview {
+  .preview {
     flex: 1;
     height: 36px;
     border-radius: 8px;
     border: 1px solid #d1d5db;
-    background-color: #0ea5e9;
     transition: background 0.2s ease;
   }
 
@@ -127,22 +139,45 @@
 </style>
 
 <script>
-  const colorInput = document.getElementById("color");
-  const previewBox = document.getElementById("preview");
+  const primaryInput = document.getElementById("primary-color");
+  const secondaryInput = document.getElementById("secondary-color");
+  const dangerInput = document.getElementById("danger-color");
   const nameInput = document.getElementById("token-name");
   const createBtn = document.getElementById("create");
   const cancelBtn = document.getElementById("cancel");
 
-  // 색상 미리보기 업데이트
-  colorInput.oninput = () => {
-    previewBox.style.backgroundColor = colorInput.value;
+  const previews = {
+    primary: document.getElementById("preview-primary"),
+    secondary: document.getElementById("preview-secondary"),
+    danger: document.getElementById("preview-danger"),
   };
 
+  // 미리보기 업데이트
+  const updatePreview = (type, color) => {
+    previews[type].style.backgroundColor = color;
+  };
+
+  primaryInput.oninput = () => updatePreview("primary", primaryInput.value);
+  secondaryInput.oninput = () =>
+    updatePreview("secondary", secondaryInput.value);
+  dangerInput.oninput = () => updatePreview("danger", dangerInput.value);
+
   createBtn.onclick = () => {
-    const color = colorInput.value;
-    const name = nameInput.value.trim() || "Primary";
+    const primaryColor = primaryInput.value;
+    const secondaryColor = secondaryInput.value;
+    const dangerColor = dangerInput.value;
+    const name = nameInput.value.trim() || "Buttons";
+
     parent.postMessage(
-      { pluginMessage: { type: "create-token", color, name } },
+      {
+        pluginMessage: {
+          type: "create-token",
+          primaryColor,
+          secondaryColor,
+          dangerColor,
+          name,
+        },
+      },
       "*"
     );
   };
@@ -150,4 +185,9 @@
   cancelBtn.onclick = () => {
     parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
   };
+
+  // 초기 프리뷰 반영
+  updatePreview("primary", primaryInput.value);
+  updatePreview("secondary", secondaryInput.value);
+  updatePreview("danger", dangerInput.value);
 </script>
